@@ -26,12 +26,13 @@ from __future__ import annotations
 import json
 import logging
 import os
+import secrets
 import time
 import uuid
 from typing import Any, AsyncIterator
 
 from dotenv import find_dotenv, load_dotenv
-from fastapi import FastAPI, Header, HTTPException, Request
+from fastapi import Depends, FastAPI, Header, HTTPException, Request
 from fastapi.responses import StreamingResponse
 
 import game
@@ -57,12 +58,16 @@ LLM_MODEL = os.environ.get("LLM_MODEL", "gpt-4o-mini")
 app = FastAPI(title="fish-game-master")
 
 
-def _check_auth(authorization: str | None) -> None:
-    """Validate the Bearer token Fish sends (set via llm.custom.api_key on the agent)."""
+def _check_auth(authorization: str | None = Header(default=None)) -> None:
+    """Validate the Bearer token Fish sends (set via llm.custom.api_key on the agent).
+
+    Used as a FastAPI dependency so both the chat-completions and the game-event
+    routes share the same check.
+    """
     if not authorization or not authorization.startswith("Bearer "):
         raise HTTPException(status_code=401, detail="missing bearer token")
     token = authorization.removeprefix("Bearer ").strip()
-    if token != CUSTOM_LLM_API_KEY:
+    if not secrets.compare_digest(token, CUSTOM_LLM_API_KEY):
         raise HTTPException(status_code=401, detail="invalid bearer token")
 
 
@@ -83,6 +88,9 @@ def _sse(chunk: dict[str, Any]) -> str:
 
 
 def _chunk(request_id: str, model: str, delta: dict[str, Any], finish_reason: str | None) -> dict:
+    # OpenAI-standard form: every chunk's choice carries "finish_reason", null until
+    # the final one. The real-LLM passthrough path (_stream_real_llm) keeps the
+    # same field from upstream, so both paths are shaped identically.
     return {
         "id": request_id,
         "object": "chat.completion.chunk",
@@ -123,7 +131,9 @@ async def _stream_real_llm(
         kwargs["tools"] = tools
     stream = await client.chat.completions.create(**kwargs)
     async for event in stream:
-        yield _sse(event.model_dump(exclude_none=True))
+        # No exclude_none: keep "finish_reason": null on in-progress chunks, same
+        # shape as _chunk() above, instead of omitting the key.
+        yield _sse(event.model_dump())
     yield "data: [DONE]\n\n"
 
 
@@ -132,11 +142,8 @@ async def health() -> dict:
     return {"status": "ok", "mode": "real-llm" if LLM_API_KEY else "mock"}
 
 
-@app.post("/v1/chat/completions")
-async def chat_completions(
-    request: Request, authorization: str | None = Header(default=None)
-) -> StreamingResponse:
-    _check_auth(authorization)
+@app.post("/v1/chat/completions", dependencies=[Depends(_check_auth)])
+async def chat_completions(request: Request) -> StreamingResponse:
     body = await request.json()
 
     session_id = body.get("session_id", "unknown")
@@ -172,7 +179,10 @@ async def chat_completions(
     # Inject our context as a system message right before the latest turn, after
     # whatever system prompt Fish already assembled (keep it short, see README).
     context_message = {"role": "system", "content": game.build_context(state)}
-    messages_with_context = [*messages, context_message]
+    if messages:
+        messages_with_context = [*messages[:-1], context_message, messages[-1]]
+    else:
+        messages_with_context = [context_message]
 
     if LLM_API_KEY:
         log.info("[session %s] forwarding to real LLM (%s)", session_id, LLM_MODEL)
@@ -183,12 +193,14 @@ async def chat_completions(
     return StreamingResponse(generator, media_type="text/event-stream")
 
 
-@app.post("/game/{game_session_id}/event")
+@app.post("/game/{game_session_id}/event", dependencies=[Depends(_check_auth)])
 async def post_event(game_session_id: str, request: Request) -> dict:
     """Let a game client push an event into state ahead of the NPC's next turn.
 
     This is the context-injection demo: curl this, then send a chat completion
     request with a matching `game_session_id` and watch build_context react.
+    Protected by the same CUSTOM_LLM_API_KEY bearer check as /v1/chat/completions —
+    anyone who can reach this endpoint can rewrite your game state.
     """
     body = await request.json()
     event = body.get("event")

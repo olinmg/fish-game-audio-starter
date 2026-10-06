@@ -86,12 +86,15 @@ def test_chat_completions_streams_valid_sse_chunks():
     assert saw_finish_stop
 
 
-def test_game_event_changes_mock_reply():
+def test_game_event_requires_auth_and_changes_mock_reply():
     session_id = "game_sword_test"
     before = game.get_state(session_id)
     assert before["player_has_sword"] is False
 
-    event_resp = client.post(f"/game/{session_id}/event", json={"event": "sword_drawn"})
+    unauth_resp = client.post(f"/game/{session_id}/event", json={"event": "sword_drawn"})
+    assert unauth_resp.status_code == 401
+
+    event_resp = client.post(f"/game/{session_id}/event", json={"event": "sword_drawn"}, headers=AUTH)
     assert event_resp.status_code == 200
     assert event_resp.json()["state"]["player_has_sword"] is True
 
@@ -104,3 +107,41 @@ def test_game_event_changes_mock_reply():
     first_chunk = json.loads(lines[0].removeprefix("data: "))
     content = first_chunk["choices"][0]["delta"]["content"]
     assert "sword" in content.lower() or "wary" in content.lower()
+
+
+def test_tool_result_round_trip_updates_state():
+    """A tool_calls assistant turn followed by a role:"tool" result (Fish's
+    follow-up request after executing our tool) should reach game.on_tool_result
+    and update state (see game.py's pay_toll example) before the next reply.
+    """
+    session_id = "game_tool_test"
+    state = game.get_state(session_id)
+    assert state["bridge_open"] is False
+
+    request_body = {
+        **FISH_REQUEST,
+        "fishaudio_extra_body": {"game_session_id": session_id},
+        "messages": [
+            {"role": "user", "content": "I'll pay the toll."},
+            {
+                "role": "assistant",
+                "tool_calls": [
+                    {"id": "call_1", "type": "function", "function": {"name": "pay_toll", "arguments": "{}"}}
+                ],
+            },
+            {"role": "tool", "tool_call_id": "call_1", "content": '{"success": true}'},
+        ],
+    }
+    resp = client.post("/v1/chat/completions", json=request_body, headers=AUTH)
+    assert resp.status_code == 200
+
+    state = game.get_state(session_id)
+    assert state["bridge_open"] is True
+    assert state["mood"] == "satisfied"
+
+    lines = _parse_sse(resp.text)
+    import json
+
+    first_chunk = json.loads(lines[0].removeprefix("data: "))
+    content = first_chunk["choices"][0]["delta"]["content"]
+    assert "already through" in content.lower()

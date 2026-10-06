@@ -119,10 +119,13 @@ curl -N -X POST http://localhost:8000/v1/chat/completions \
   }'
 ```
 
-Push a game event, then watch the next reply react to it (context injection demo):
+Push a game event, then watch the next reply react to it (context injection demo).
+`/game/{id}/event` is protected by the same `CUSTOM_LLM_API_KEY` bearer check as
+`/v1/chat/completions`, so send the header here too:
 
 ```bash
 curl -X POST http://localhost:8000/game/demo/event \
+  -H "Authorization: Bearer $CUSTOM_LLM_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{"event": "sword_drawn"}'
 # re-run the curl above with the same game_session_id — the reply changes to the "wary" line
