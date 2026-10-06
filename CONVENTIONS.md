@@ -6,7 +6,8 @@ These rules keep every example easy to copy into a game and easy for an LLM to e
 
 Each `examples/NN-name/` folder can be copied out of the repo on its own. It has:
 
-- `README.md`: what it shows, how to run it (one command), which Fish docs it relies on (links), and
+- `README.md`: starts with a one-line "Coding agent? Run `npx skills add https://docs.fish.audio` and read
+  [AGENTS.md](../../AGENTS.md)" note, then what it shows, how to run it (one command), which Fish docs it relies on (links), and
   "Where to put your game code".
 - Its own dependency file (`pyproject.toml` for uv, `package.json` for Node).
 - A `game.py` / `game.ts` / `game.js` file holding **all** game-side logic. Everything else is audio plumbing.

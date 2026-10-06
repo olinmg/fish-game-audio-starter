@@ -3,6 +3,17 @@
 You are helping a hackathon team build a game that uses Fish Audio for voice. This repo contains
 **audio starting blocks only**. The team builds the game.
 
+## Step 0: load the official Fish Audio skills (do this first)
+
+```bash
+npx skills add https://docs.fish.audio                 # interactive: choose your agent
+npx skills add https://docs.fish.audio -s '*' -a claude-code --copy -y   # non-interactive (swap the agent: cursor, codex, ...)
+```
+
+Claude Code: they are already committed in `.claude/skills/`, so read them before writing any Fish Audio code.
+Note: the skill files mention a `references/` folder that is not shipped. For deeper detail, fetch
+https://docs.fish.audio/llms-full.txt or the specific page from https://docs.fish.audio/llms.txt.
+
 ## Ground truth: always check the official Fish Audio docs
 
 Do not guess Fish Audio APIs from memory. They change. Use, in order:

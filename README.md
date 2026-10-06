@@ -4,6 +4,25 @@ Starting blocks for the **audio layer** of a voice-driven game, built on [Fish A
 The game itself is yours to build. This repo gives you working, copy-pasteable snippets for making
 characters **speak**, **listen** and **hold conversations**, plus docs on the concepts behind them.
 
+## 🤖 Building with an AI coding agent? Start here
+
+Give your agent the official Fish Audio knowledge **before** it writes code:
+
+```bash
+npx skills add https://docs.fish.audio
+```
+
+This installs two official skills, **`fish-audio-sdk`** (Python and JS SDK signatures) and **`fish-audio-api`**
+(raw REST and WebSocket protocol), for Claude Code, Cursor, Codex and others. Claude Code users already have them:
+they are committed in [`.claude/skills/`](.claude/skills/). Also point your agent at:
+
+| Resource | URL |
+|---|---|
+| Doc index for LLMs | https://docs.fish.audio/llms.txt |
+| Full docs in one file | https://docs.fish.audio/llms-full.txt |
+| Fish Audio MCP server (tools: voices, TTS, STT) | `https://api.fish.audio/mcp` |
+| This repo's rules for agents | [AGENTS.md](AGENTS.md) |
+
 > Every example runs with only a `FISH_API_KEY`. The "game brain" in each example is a clearly marked
 > **MOCKUP** (a one-sentence prompt or a fake LLM that always returns the same line). Replace it with
 > your game.
@@ -47,8 +66,3 @@ See [CONVENTIONS.md](CONVENTIONS.md) for details.
 - [docs/concepts/](docs/concepts/): latency, turn-taking, context injection, emotion tags, voices, NPC prompting
 - [docs/gotchas.md](docs/gotchas.md): things that will bite you (read this one)
 - [docs/fish-audio-links.md](docs/fish-audio-links.md): curated links into the official Fish Audio docs
-
-## Using a coding agent (Claude Code, Cursor, Codex, ...)
-
-This repo is set up for AI-assisted building. See [AGENTS.md](AGENTS.md). The official Fish Audio agent
-skills are already installed in `.claude/skills/`.
