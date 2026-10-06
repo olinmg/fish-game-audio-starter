@@ -44,6 +44,12 @@ app.post("/api/session", async (req, res) => {
         agent_id: FISH_AGENT_ID,
         // GAME HOOK: pass real player facts here instead of the mockup values,
         // e.g. end_user_id / dynamic_variables derived from a logged-in user.
+        // These values render straight into the agent's system prompt (see
+        // dynamic-variables.md), so this demo forwarding whatever the browser
+        // sent is NOT safe for a real game: a player could edit the request
+        // body and inject arbitrary prompt text. Build dynamic_variables here
+        // from trusted server-side game state (a session/DB lookup keyed by
+        // the authenticated user), not from client input.
         dynamic_variables: req.body?.dynamicVariables ?? {},
       }),
     });

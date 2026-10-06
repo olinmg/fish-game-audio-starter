@@ -39,6 +39,11 @@ npm run server                     # terminal 1: token server on :8787
 npm run dev                        # terminal 2: Vite dev server, opens the page
 ```
 
+`npm run create-agent` is **not idempotent**: every run creates a brand new agent and two new tools, it
+never updates or reuses existing ones. Run it once, keep the printed `FISH_AGENT_ID`, and don't re-run it
+unless you want another agent (clean up the extras in the [console](https://fish.audio/app/agents) if you
+do).
+
 Click **Start call**, allow the microphone, and talk. Use the **Game events** buttons to inject text the
 agent reacts to without speaking it back. Tool calls (`open_gate`, `give_item`) show up in the Tool calls
 log and update the Game state panel.
@@ -56,6 +61,11 @@ All of it is in [`src/game.ts`](src/game.ts): the mockup `gameState`, the dynami
 it, the two client tool handlers, and the list of game-event buttons. Everything else
 ([`src/main.ts`](src/main.ts), [`server/server.mjs`](server/server.mjs)) is audio/session plumbing you
 should rarely need to touch. `grep -n "GAME HOOK" src/game.ts` for the exact spots.
+
+Dynamic variables render straight into the agent's system prompt, and this demo's `server/server.mjs`
+forwards whatever `dynamicVariables` the browser sent. That's fine for a local demo but not safe for a
+real game: build them server-side from trusted game state (keyed by the authenticated user), not from
+client input.
 
 ## Concepts
 

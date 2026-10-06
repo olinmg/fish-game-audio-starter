@@ -50,23 +50,31 @@ startBtn.onclick = async () => {
   }
   const sessionToken = await res.json();
 
-  session = await AgentSession.start({
-    sessionToken,
-    clientTools: makeClientTools(renderState),
-    callbacks: {
-      onUserTranscript: ({ text, final }) => final && logTranscript(`You: ${text}`),
-      onAgentResponse: ({ text }) => logTranscript(`Agent: ${text}`),
-      onModeChange: (mode) => (micStatus.textContent = mode),
-      onToolCallStarted: ({ toolName, input }) => logTool(`-> ${toolName} ${input}`),
-      onToolCallCompleted: ({ toolName, output }) => logTool(`<- ${toolName} ${output}`),
-      onToolCallFailed: ({ toolName, error }) => logTool(`x  ${toolName} ${error}`),
-      onDisconnect: ({ reason }) => {
-        micStatus.textContent = `ended (${reason})`;
-        startBtn.disabled = false;
-        stopBtn.disabled = true;
+  try {
+    session = await AgentSession.start({
+      sessionToken,
+      clientTools: makeClientTools(renderState),
+      callbacks: {
+        onUserTranscript: ({ text, final }) => final && logTranscript(`You: ${text}`),
+        onAgentResponse: ({ text }) => logTranscript(`Agent: ${text}`),
+        onModeChange: (mode) => (micStatus.textContent = mode),
+        onToolCallStarted: ({ toolName, input }) => logTool(`-> ${toolName} ${input}`),
+        onToolCallCompleted: ({ toolName, output }) => logTool(`<- ${toolName} ${output}`),
+        onToolCallFailed: ({ toolName, error }) => logTool(`x  ${toolName} ${error}`),
+        onError: (err) => logTranscript(`[error] ${err.code}`),
+        onDisconnect: ({ reason }) => {
+          micStatus.textContent = `ended (${reason})`;
+          startBtn.disabled = false;
+          stopBtn.disabled = true;
+        },
       },
-    },
-  });
+    });
+  } catch (err) {
+    micStatus.textContent = `error: ${(err as Error).message ?? err}`;
+    logTranscript(`[error] failed to start session: ${err}`);
+    startBtn.disabled = false;
+    return;
+  }
 
   stopBtn.disabled = false;
 };
