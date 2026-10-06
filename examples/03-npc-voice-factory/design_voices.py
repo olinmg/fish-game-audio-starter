@@ -70,9 +70,10 @@ for i, candidate in enumerate(candidates, 1):
         f.write(audio_bytes)
 
     sample_rate = candidate.get("sample_rate", "?")
-    duration = candidate.get("duration", "?")
+    duration_ms = candidate.get("duration_ms", "?")
+    duration_s = f"{duration_ms / 1000:.1f}" if isinstance(duration_ms, (int, float)) else "?"
     print(f"[voice-design] {filename}")
-    print(f"  Sample rate: {sample_rate} Hz, Duration: {duration}s")
+    print(f"  Sample rate: {sample_rate} Hz, Duration: {duration_s}s")
     print(f"  ID: {candidate.get('id', 'unknown')}\n")
 
 print(f"[voice-design] Next: uv run save_voice.py \"{character.name}\" 1")

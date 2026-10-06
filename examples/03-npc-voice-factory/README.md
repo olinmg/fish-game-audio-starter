@@ -8,7 +8,7 @@ Create custom NPC voices from character descriptions. Build a library of unique,
 
 ## Workflow
 
-1. **Design** (`design_voices.py`): Describe a character (e.g., "gravelly, grumpy guard"). Get 2-4 voice candidates as WAV files.
+1. **Design** (`design_voices.py`): Describe a character (e.g., "gravelly, grumpy guard"). Get 2 voice candidates by default as WAV files (change `n` in the script for 1-4).
 2. **Save** (`save_voice.py`): Pick a candidate, create a persistent voice model, get its ID.
 3. **Speak** (`save_voice.py` demos this): Use the saved voice ID in TTS to speak any text.
 
@@ -53,5 +53,5 @@ For one-off voices without saving a model, use raw HTTP with MessagePack (see `r
 
 - Voice Design: [voice-design.md](https://docs.fish.audio/features/voice-design.md)
 - Voice Cloning: [voice-cloning.md](https://docs.fish.audio/developer-guide/best-practices/voice-cloning.md)
-- Voice Models: [Voice models guide](https://docs.fish.audio/developer-guide/core-features/voice-models.md)
+- Voice Models: [creating-models.md](https://docs.fish.audio/developer-guide/core-features/creating-models.md)
 - Fish Audio console: [voices](https://fish.audio/app/voices)

@@ -7,5 +7,4 @@ dependencies = [
     "fish-audio-sdk",
     "python-dotenv",
     "httpx",
-    "msgpack",
 ]
