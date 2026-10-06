@@ -59,9 +59,11 @@ strangely.
 
 ## Agent tools
 
-- **Client-tool results must be small.** Results travel over a 64 KB realtime data-channel
-  message, and the model re-reads the whole result on every turn. Return a summary or an id, not a
-  game-state dump. Default handler timeout is 15 s client-side (`clientToolTimeoutMs`), with a
+- **Client-tool results must be small.** A result over ~60 KB serialized
+  (`MAX_CLIENT_TOOL_RESULT_BYTES`) or that isn't JSON-serializable is rejected with an error
+  instead of being sent, and the model re-reads the whole result on every turn anyway. Return a
+  summary or an id, not a game-state dump. Default handler timeout is 15 s client-side
+  (`clientToolTimeoutMs`), with a
   separate 30 s server-side deadline (settable 1–120 s per tool) that the client-side value can
   only tighten, never extend.
 - **Up to 10 background webhook calls in flight per conversation.** Further calls fail

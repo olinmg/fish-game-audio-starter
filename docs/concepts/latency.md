@@ -76,10 +76,10 @@ by using the hosted platform.
 - **Pre-generate and cache fixed lines.** Any line that doesn't depend on game state (greetings,
   common barks, menu prompts) should be synthesized once at build/setup time, not on every
   playthrough. See [03-npc-voice-factory](../../examples/03-npc-voice-factory).
-- **Audio format.** `pcm` has no encode/decode step; `opus` is small and fast to transmit; `mp3`
-  needs encoding on the server and decoding on the client. For the lowest end-to-end latency over
-  a real network, prefer `pcm` or `opus` over `mp3`/`wav` — see the `format` field in
-  [docs/concepts/voices.md](voices.md) and the TTS endpoint reference below.
+- **Audio format.** The TTS `format` field accepts `mp3` (default), `wav`, `pcm`, or `opus`. `pcm`
+  has no encode/decode step; `opus` is small and fast to transmit; `mp3`/`wav` need encoding on
+  the server and decoding on the client. For the lowest end-to-end latency over a real network,
+  prefer `pcm` or `opus` — see the TTS endpoint reference below.
 
 ## Fish Audio docs
 

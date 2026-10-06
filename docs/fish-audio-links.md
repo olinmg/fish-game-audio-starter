@@ -22,9 +22,9 @@ source of truth; every page there also exists as `<page>.md`.
 > | Doc index | https://docs.fish.audio/llms.txt | Finding the right page fast (this file's source) |
 > | Full doc dump | https://docs.fish.audio/llms-full.txt | One fetch, every page, when you need to grep broadly |
 > | OpenAPI spec | https://docs.fish.audio/api-reference/openapi.json | Exact REST schema, codegen |
-> | AsyncAPI spec | https://docs.fish.audio/api-reference/asyncapi.yml | Exact WebSocket schema |
+> | WebSocket reference | https://docs.fish.audio/api-reference/endpoint/websocket/tts-live.md | Exact WebSocket schema and event sequence |
 > | MCP server | https://api.fish.audio/mcp | Tools, not docs: search voices, generate speech, transcribe, OAuth sign-in |
-> | Pricing page | https://fish.audio/pricing | Current prices (verify against the pricing doc link below) |
+> | Pricing & rate limits | https://docs.fish.audio/developer-guide/models-pricing/pricing-and-rate-limits.md | Current prices and concurrency tiers (plans: https://fish.audio/plan) |
 
 ## Start here
 

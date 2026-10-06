@@ -70,7 +70,8 @@ feed a chosen candidate's audio into a persistent voice model.
 
 - **One speaker only**, steady volume and tone, no background noise/music, small pauses between
   sentences.
-- **15–30 seconds** across 2–3 clips reading a natural paragraph beats one long rushed take.
+- **15–20 seconds each, across 2–3 clips** reading a natural paragraph beats one long rushed take.
+  10 seconds is the minimum for studio-quality results.
 - Record somewhere quiet and soft-furnished (bedroom, parked car) — avoid open windows, running
   appliances, other people talking.
 - A phone voice recorder or gaming headset mic is fine; you don't need studio gear.

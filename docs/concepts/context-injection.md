@@ -32,10 +32,12 @@ stays in the prompt, visible to the model. Always supply every variable you refe
 
 ### Session overrides (agents)
 
-`overrides` on the same request replaces whole fields (`system_prompt`, `first_message`,
-`voice_id`, `language`) for one session — use this when the persona itself changes per player, not
-just a value inside it. Keyless (public-agent) sessions may override only `voice_id` and
-`language`; prompt-shaping overrides need a session created from your backend.
+`overrides` on the same request replaces whole fields (`system_prompt`, `first_message` or
+`first_message_prompt`, `voice_id`, `language`) for one session — use this when the persona itself
+changes per player, not just a value inside it. `first_message` is spoken verbatim;
+`first_message_prompt` is instructions the agent generates its opener from instead — they're
+mutually exclusive, sending both is rejected. Keyless (public-agent) sessions may override only
+`voice_id` and `language`; prompt-shaping overrides need a session created from your backend.
 
 ### Silent `user.message` (agents, mid-conversation)
 
@@ -104,8 +106,9 @@ const session = await AgentSession.start({
 });
 ```
 
-Keep results small — they travel over a 64 KB data-channel message and the model re-reads the
-whole result every turn. Return a summary or an id, not a game-state dump.
+Keep results small — a result over ~60 KB serialized (`MAX_CLIENT_TOOL_RESULT_BYTES`) is rejected
+instead of sent, and the model re-reads the whole result every turn anyway. Return a summary or an
+id, not a game-state dump.
 
 ### Webhook tools (agent calls your server)
 
