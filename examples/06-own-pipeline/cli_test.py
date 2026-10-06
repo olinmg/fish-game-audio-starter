@@ -9,6 +9,8 @@ end, including fully offline with MOCK_STT=1 MOCK_TTS=1 and no LLM_API_KEY.
 
 import asyncio
 import math
+import os
+import re
 import struct
 import sys
 import wave
@@ -19,10 +21,14 @@ from dotenv import find_dotenv, load_dotenv
 
 load_dotenv(find_dotenv(usecwd=True))
 
+from fishaudio import AsyncFishAudio
+
 import game
 import llm
 import stt
 import tts
+
+SENTENCE_END = re.compile(r"(?<=[.!?])\s+")  # same split as server.py
 
 
 def _tone_wav() -> bytes:
@@ -62,11 +68,17 @@ async def main():
 
     out_dir = Path("out")
     out_dir.mkdir(exist_ok=True)
-    for i, sentence in enumerate(s.strip() for s in clean_text.split(".") if s.strip()):
-        audio, fmt = await tts.synthesize_sentence(sentence, game.get_voice_for_npc())
-        path = out_dir / f"cli_test_sentence_{i}.{fmt}"
-        path.write_bytes(audio)
-        print(f"wrote {path} ({len(audio)} bytes)")
+    client = None if os.environ.get("MOCK_TTS") == "1" else AsyncFishAudio()
+    try:
+        sentences = [s.strip() for s in SENTENCE_END.split(clean_text) if s.strip()]
+        for i, sentence in enumerate(sentences):
+            audio, fmt = await tts.synthesize_sentence(client, sentence, game.get_voice_for_npc())
+            path = out_dir / f"cli_test_sentence_{i}.{fmt}"
+            path.write_bytes(audio)
+            print(f"wrote {path} ({len(audio)} bytes)")
+    finally:
+        if client:
+            await client.close()
 
 
 if __name__ == "__main__":

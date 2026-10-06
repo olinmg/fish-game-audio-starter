@@ -28,8 +28,15 @@ from fishaudio import AsyncFishAudio
 TTS_MODEL = os.environ.get("FISH_TTS_MODEL", "s2.1-pro")
 
 
-async def synthesize_sentence(text: str, voice_id: str | None) -> tuple[bytes, str]:
-    """Return one sentence's full audio as (bytes, format) - format is "mp3" unless mocked."""
+async def synthesize_sentence(
+    client: AsyncFishAudio | None, text: str, voice_id: str | None
+) -> tuple[bytes, str]:
+    """Return one sentence's full audio as (bytes, format) - format is "mp3" unless mocked.
+
+    `client` is a single `AsyncFishAudio` reused across a whole connection/turn (created by
+    the caller) so each sentence doesn't pay for a fresh client/connection setup; pass `None`
+    when MOCK_TTS=1, since no client is needed.
+    """
     if os.environ.get("MOCK_TTS") == "1":
         print(f"[tts] [MOCKUP] MOCK_TTS=1 -> synthetic tone instead of {text!r}")
         return _tone_wav(), "wav"
@@ -38,14 +45,13 @@ async def synthesize_sentence(text: str, voice_id: str | None) -> tuple[bytes, s
         yield text
 
     chunks = []
-    async with AsyncFishAudio() as client:  # reads FISH_API_KEY from env
-        async for audio_chunk in client.tts.stream_websocket(
-            one_chunk(),
-            reference_id=voice_id,
-            format="mp3",
-            model=TTS_MODEL,  # type: ignore[arg-type]  # s2.1-pro works over the wire; SDK types only list s1/s2-pro
-        ):
-            chunks.append(audio_chunk)
+    async for audio_chunk in client.tts.stream_websocket(
+        one_chunk(),
+        reference_id=voice_id,
+        format="mp3",
+        model=TTS_MODEL,  # type: ignore[arg-type]  # s2.1-pro works over the wire; SDK types only list s1/s2-pro
+    ):
+        chunks.append(audio_chunk)
     audio = b"".join(chunks)
     print(f"[tts] ({TTS_MODEL}) {len(audio)} bytes for {text!r}")
     return audio, "mp3"

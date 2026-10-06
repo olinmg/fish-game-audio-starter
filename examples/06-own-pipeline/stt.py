@@ -27,6 +27,7 @@ async def transcribe(wav_bytes: bytes) -> str:
     async with AsyncFishAudio() as client:  # reads FISH_API_KEY from env
         response = await client.asr.transcribe(
             audio=wav_bytes,
+            include_timestamps=False,  # we only need the text, not word timings
             request_options=RequestOptions(additional_headers={"model": STT_MODEL}),
         )
     print(f"[stt] ({STT_MODEL}) -> {response.text!r}")

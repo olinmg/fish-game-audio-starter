@@ -16,7 +16,9 @@ import os
 
 from openai import AsyncOpenAI
 
-MOCKUP_REPLY = "Hmm, let me think. Fine, traveller, I suppose I can let you through."
+MOCKUP_REPLY = (
+    "Hmm, let me think. Fine, traveller, I suppose I can let you through. <action:open_gate>"
+)
 
 
 async def stream_reply(messages: list[dict]):
