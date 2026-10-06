@@ -25,7 +25,7 @@ Do not guess Fish Audio APIs from memory. They change. Use, in order:
 2. **Doc index for LLMs**: https://docs.fish.audio/llms.txt (every page also exists as `.md`)
    **Full dump**: https://docs.fish.audio/llms-full.txt
 3. **API specs**: https://docs.fish.audio/api-reference/openapi.json (REST) and
-   https://docs.fish.audio/api-reference/asyncapi.yml (WebSocket)
+   https://docs.fish.audio/api-reference/endpoint/websocket/tts-live.md (WebSocket TTS; the asyncapi.yml listed in llms.txt is a 404)
 4. **MCP server** (gives tools rather than docs: search voices, generate speech, transcribe):
    `https://api.fish.audio/mcp` (OAuth)
 
