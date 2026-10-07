@@ -1,8 +1,13 @@
+html {
+  background: #fff;
+}
 body {
   font-family: system-ui, sans-serif;
   max-width: 640px;
   margin: 2rem auto;
   padding: 0 1rem;
+  background: #fff;
+  color: #111;
 }
 pre {
   background: #f4f4f4;

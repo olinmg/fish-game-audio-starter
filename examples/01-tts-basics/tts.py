@@ -23,8 +23,8 @@ out_dir = Path("out")
 out_dir.mkdir(exist_ok=True)
 
 client = FishAudio()
-tts_model = os.getenv("FISH_TTS_MODEL", "s2.1-pro")
-default_voice_id = os.getenv("FISH_VOICE_ID")
+tts_model = os.getenv("FISH_TTS_MODEL") or "s2.1-pro"
+default_voice_id = os.getenv("FISH_VOICE_ID") or None  # empty in .env -> Fish default voice
 
 print(f"[tts] Converting {len(LINES)} lines")
 
@@ -45,7 +45,7 @@ for i, line in enumerate(LINES, 1):
 
     filename = f"{i:02d}_{line.speaker.replace(' ', '_')}.mp3"
     save(audio, str(out_dir / filename))
-    print(f"    → {filename} ({len(audio) / 1024:.0f} KB, {elapsed:.1f}s)")
+    print(f"    -> {filename} ({len(audio) / 1024:.0f} KB, {elapsed:.1f}s)")
 
 # Demo: HTTP streaming (show chunks arriving + time to first byte)
 if LINES:

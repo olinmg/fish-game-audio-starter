@@ -59,7 +59,7 @@ voice = client.voices.create(
 )
 voice_id = voice.id
 
-print(f"[voice-clone] ✓ Voice created!")
+print(f"[voice-clone] Voice created!")
 print(f"  ID: {voice_id}")
 print(f"  Use in game: FISH_VOICE_ID={voice_id}")
 print()
