@@ -46,7 +46,7 @@ DEV_DEFAULT_KEY = "dev-only-change-me"
 CUSTOM_LLM_API_KEY = os.environ.get("CUSTOM_LLM_API_KEY", DEV_DEFAULT_KEY)
 if CUSTOM_LLM_API_KEY == DEV_DEFAULT_KEY:
     log.warning(
-        "[auth] CUSTOM_LLM_API_KEY not set — using an insecure dev default (%s). "
+        "[auth] CUSTOM_LLM_API_KEY not set - using an insecure dev default (%s). "
         "Set CUSTOM_LLM_API_KEY in .env before exposing this server publicly.",
         DEV_DEFAULT_KEY,
     )
