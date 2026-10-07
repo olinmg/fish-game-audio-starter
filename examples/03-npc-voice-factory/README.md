@@ -32,9 +32,16 @@ uv run save_voice.py "Brom the Guard" 1
 - **Voice Cloning**: Free (just saving a model).
 - **TTS with saved voice**: Normal TTS cost (per character synthesized).
 
-## Where to put your game code
+## Connecting your real game
 
-Edit `game.py`:
+> **`game.py` is a mockup, not where your game has to live.** It's a stand-in so this example runs
+> end to end. Your real game can live anywhere (engine, browser, backend); it just has to provide
+> the inputs and handle the outputs below. Then delete the mockup.
+
+- **Your game provides:** character descriptions (a voice description and a sample line per NPC), e.g. from your character sheets.
+- **Your game gets back:** voice ids to pass as `reference_id` whenever that NPC speaks.
+
+With the mockup:
 
 1. Replace `CHARACTERS` with your game's actual NPCs.
 2. For each NPC, provide a 1-2 sentence voice description and a sample line.

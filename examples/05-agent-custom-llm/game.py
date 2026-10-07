@@ -1,4 +1,8 @@
-"""All game-side logic for the custom-LLM "game master" server.
+"""MOCKUP GAME: a stand-in so this example runs end to end. It is NOT where your real game has to live.
+Keep the audio code, connect your real game (engine, frontend, backend, ...) to the GAME HOOK touch
+points below, then delete the mock content.
+
+The mock game behind the custom-LLM "game master" server.
 
 Fish owns voice (STT, turn-taking, TTS). This file owns the game: who the NPC is,
 what it currently knows about the world, and what it should say next. `server.py`

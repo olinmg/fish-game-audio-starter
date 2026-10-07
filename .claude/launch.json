@@ -2,22 +2,10 @@
   "version": "0.0.1",
   "configurations": [
     {
-      "name": "04-token-server",
-      "runtimeExecutable": "npm",
-      "runtimeArgs": ["--prefix", "examples/04-agent-web", "run", "server"],
-      "port": 8787
-    },
-    {
-      "name": "04-agent-web",
-      "runtimeExecutable": "npm",
-      "runtimeArgs": ["--prefix", "examples/04-agent-web", "run", "dev"],
-      "port": 5173
-    },
-    {
-      "name": "06-own-pipeline",
-      "runtimeExecutable": "uv",
-      "runtimeArgs": ["run", "--directory", "examples/06-own-pipeline", "uvicorn", "server:app", "--port", "8001"],
-      "port": 8001
+      "name": "playground",
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["playground/start.mjs"],
+      "port": 3000
     }
   ]
 }

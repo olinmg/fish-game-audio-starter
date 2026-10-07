@@ -51,7 +51,8 @@ Console output logs latency so you can tune it:
 ## Files
 
 - `game.py`: the NPC's "brain" -- `NPC_PROMPT`, `GAME_STATE`, and `stream_npc_reply()`
-  (the async generator of text pieces). **This is where your game code goes.**
+  (the async generator of text pieces). **This is a mockup**: your real game can live anywhere and only needs to hand over an async stream of
+  text pieces (from your LLM or dialogue system), which then gets spoken while it's still arriving.
 - `stream_tts.py`: wires `game.py`'s generator into Fish's WebSocket TTS via the Python SDK
   (`client.tts.stream_websocket`). Logs time-to-first-audio and total time.
 - `stream_tts_raw.py`: the same thing over the raw WebSocket + MessagePack protocol, no SDK

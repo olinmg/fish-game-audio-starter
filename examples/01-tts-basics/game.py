@@ -1,5 +1,9 @@
 """
-Game content: dialogue lines and narrator beats.
+MOCKUP GAME: a stand-in so this example runs end to end. It is NOT where your real game has to live.
+Keep the audio code, connect your real game (engine, frontend, backend, ...) to the GAME HOOK touch
+points below, then delete the mock content.
+
+Mock game content: dialogue lines and narrator beats.
 GAME HOOK: Replace LINES with your game's actual dialogue tree.
 """
 

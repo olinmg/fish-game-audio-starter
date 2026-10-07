@@ -22,3 +22,10 @@ button {
 #events button {
   margin-bottom: 0.5rem;
 }
+/* Inside the playground the tab already shows the title. */
+.embedded h1 {
+  display: none;
+}
+.embedded body {
+  margin-top: 1rem;
+}

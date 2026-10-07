@@ -1,4 +1,8 @@
-// ALL game logic lives in this file. src/main.ts only wires it up to the
+// MOCKUP GAME: a stand-in so this example runs end to end. It is NOT where your real game has to live.
+// Keep the audio code, connect your real game (engine, frontend, backend, ...) to the GAME HOOK touch
+// points below, then delete the mock content.
+//
+// The mock game for this example. src/main.ts only wires it up to the
 // Fish Agent session and the DOM. See CONVENTIONS.md.
 //
 // This example shows surface **A**: a hosted Fish agent as the "game brain".

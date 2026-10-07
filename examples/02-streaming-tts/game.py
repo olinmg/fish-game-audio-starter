@@ -1,4 +1,8 @@
-"""Game-side logic: the NPC's "brain". Everything else in this example is audio plumbing.
+"""MOCKUP GAME: a stand-in so this example runs end to end. It is NOT where your real game has to live.
+Keep the audio code, connect your real game (engine, frontend, backend, ...) to the GAME HOOK touch
+points below, then delete the mock content.
+
+The mock NPC "brain". Everything else in this example is audio plumbing.
 
 Replace stream_npc_reply with your real game/LLM logic. Keep it an async generator that
 yields small text pieces as they become available -- that's what lets stream_tts.py start

@@ -1,6 +1,10 @@
-"""All game logic lives here. Everything else in this example is audio plumbing.
+"""MOCKUP GAME: a stand-in so this example runs end to end. It is NOT where your real game has to live.
+Keep the audio code, connect your real game (engine, frontend, backend, ...) to the GAME HOOK touch
+points below, then delete the mock content.
 
-Replace NPC_PROMPT, GAME_STATE, and the hooks below with your own game. Nothing in
+The mock game for this pipeline. Everything else in this example is audio plumbing.
+
+Swap the mock NPC_PROMPT, GAME_STATE and hooks below for calls into your real game. Nothing in
 server.py / stt.py / llm.py / tts.py needs to change to support a different game.
 """
 

@@ -55,9 +55,16 @@ first message `Well now, look who's come knocking.`, then add two **client** too
 `open_gate` (no arguments, "expects response" on) and `give_item` (one argument `item_name`, "expects
 response" on). Publish, then copy the agent id into `FISH_AGENT_ID`.
 
-## Where your game code goes
+## Connecting your real game
 
-All of it is in [`src/game.ts`](src/game.ts): the mockup `gameState`, the dynamic variables derived from
+> **`src/game.ts` is a mockup, not where your game has to live.** It's a stand-in so this example runs
+> end to end. Your real game can live anywhere (engine, browser, backend); it just has to provide
+> the inputs and handle the outputs below. Then delete the mockup.
+
+- **Your game provides:** facts for the prompt at session start (dynamic variables) and game events during the call (silent `sendUserMessage`).
+- **Your game gets back:** client tool calls (`open_gate`, `give_item`) to apply to your game state, plus transcripts.
+
+The mockup in [`src/game.ts`](src/game.ts) shows each touch point: the fake `gameState`, the dynamic variables derived from
 it, the two client tool handlers, and the list of game-event buttons. Everything else
 ([`src/main.ts`](src/main.ts), [`server/server.mjs`](server/server.mjs)) is audio/session plumbing you
 should rarely need to touch. `grep -n "GAME HOOK" src/game.ts` for the exact spots.

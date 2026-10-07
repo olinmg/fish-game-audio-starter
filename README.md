@@ -36,6 +36,16 @@ cd examples/01-tts-basics   # pick any example and follow its README
 
 Python examples use [uv](https://docs.astral.sh/uv/) (`uv run ...`). Browser examples use Node 20+.
 
+### Try both conversation options in one page
+
+```bash
+node playground/start.mjs   # then open http://localhost:3000 (needs FISH_API_KEY and FISH_AGENT_ID in .env)
+```
+
+The playground has two tabs, **Fish hosted agent** and **Own pipeline**, each with a short explanation of how
+it's set up. Run `npm run create-agent` in `examples/04-agent-web` once to get a `FISH_AGENT_ID`.
+Use Chrome and headphones.
+
 ## Pick a path
 
 | | Path | Control | Effort | Start here |
@@ -48,14 +58,20 @@ Python examples use [uv](https://docs.astral.sh/uv/) (`uv run ...`). Browser exa
 
 Not sure which one fits? Read [docs/00-choose-your-path.md](docs/00-choose-your-path.md).
 
-## Where your game code goes
+## Connecting your real game
 
-Every example keeps its game logic in **one file** (`game.py` / `game.ts` / `game.js`), separate from the
-audio plumbing. Find the spots to change with:
+Each example has a `game.py` / `game.ts` / `game.js` file. **It is a mockup, not the place your game has
+to live.** It's a tiny fake game (one NPC, one prompt, a fixed `[MOCKUP]` reply) that exists only so the
+example's audio pipeline runs end to end and you can test it.
+
+What to take from it is the **interface**: what the audio code needs *from* a game (state, events, text
+to speak) and what it hands *back* (transcripts, replies, tool calls or actions). Your real game can live
+anywhere: a game engine, the browser, a separate backend service. Feed the audio code those same inputs
+and handle the same outputs, and delete the mockup.
 
 ```bash
-grep -rn "GAME HOOK" examples/     # places meant for your game logic
-grep -rn "MOCKUP" examples/        # placeholder behaviour you should replace
+grep -rn "GAME HOOK" examples/     # the touch points between audio code and a game
+grep -rn "MOCKUP" examples/        # fake behaviour standing in for a real game
 ```
 
 See [CONVENTIONS.md](CONVENTIONS.md) for details.

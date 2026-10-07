@@ -8,13 +8,19 @@ Each `examples/NN-name/` folder can be copied out of the repo on its own. It has
 
 - `README.md`: starts with a one-line "Coding agent? Run `npx skills add https://docs.fish.audio` and read
   [AGENTS.md](../../AGENTS.md)" note, then what it shows, how to run it (one command), which Fish docs it relies on (links), and
-  "Where to put your game code".
+  "Connecting your real game" (the inputs and outputs a real game provides and handles).
 - Its own dependency file (`pyproject.toml` for uv, `package.json` for Node).
-- A `game.py` / `game.ts` / `game.js` file holding **all** game-side logic. Everything else is audio plumbing.
+- A `game.py` / `game.ts` / `game.js` file with a **mockup** game (fake state, one-sentence prompt, fixed reply)
+  so the example runs end to end. Everything else is audio plumbing. See section 2.
 
 No shared library code between examples. Duplicating a 20-line helper beats a cross-folder import.
 
-## 2. Mark where the game goes
+## 2. The game is a mockup: mark the touch points
+
+The `game.*` file is a **test harness**, not a prescribed location for real game code. It holds a minimal
+fake game so the example runs without one, and it makes the boundary between audio code and game
+visible. Real games will usually live somewhere else (an engine, a frontend, a separate service) and
+plug into the same touch points. Say this in the file's header and in the README.
 
 ```python
 # GAME HOOK: <what a game would do here, in one line>
@@ -27,7 +33,7 @@ def npc_reply(player_text: str, state: dict) -> str:
     return "[MOCKUP] Halt, traveller. The bridge is closed tonight."
 ```
 
-- `GAME HOOK` = a place a game is expected to plug in.
+- `GAME HOOK` = a touch point where a real game plugs in (provides input or receives output).
 - `MOCKUP` = fake behaviour standing in for real game logic. Log mock output with a `[MOCKUP]` prefix
   so it's obvious at runtime.
 - Game state is a tiny dict or object (`{"location": "bridge", "player_has_sword": False}`) with a

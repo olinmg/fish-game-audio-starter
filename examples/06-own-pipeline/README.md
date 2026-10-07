@@ -91,9 +91,16 @@ pipeline task for that connection and sends `{"type": "barge_in"}`; the browser 
 stops playback and clears its queued sentence audio. Kept intentionally simple - no attempt
 to splice or resume a partial reply.
 
-## Where to put your game code
+## Connecting your real game
 
-All game logic lives in `game.py`: `NPC_PROMPT`, `GAME_STATE`, `build_messages()`,
+> **`game.py` is a mockup, not where your game has to live.** It's a stand-in so this example runs
+> end to end. Your real game can live anywhere (engine, browser, backend); it just has to provide
+> the inputs and handle the outputs below. Then delete the mockup.
+
+- **Your game provides:** the game state and the prompt/messages for each turn.
+- **Your game gets back:** the player's transcript, the NPC's reply text and any `<action:...>` tags to apply to your game.
+
+The mockup in `game.py` shows each touch point: `NPC_PROMPT`, `GAME_STATE`, `build_messages()`,
 `on_player_utterance()`, `postprocess_reply()` (parses `<action:...>` tags out of the LLM
 text and updates state), and per-NPC voice selection. Nothing else in this example needs to
 change to plug in a different game.

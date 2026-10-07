@@ -38,9 +38,16 @@ Use **this** example when you need:
 The cost: you own a server that must reply fast (see "Latency" below) and must speak valid
 OpenAI SSE, or the agent goes silent mid-turn.
 
-## Where your game code goes
+## Connecting your real game
 
-All game logic lives in [`game.py`](game.py), marked with `GAME HOOK` comments:
+> **`game.py` is a mockup, not where your game has to live.** It's a stand-in so this example runs
+> end to end. Your real game can live anywhere (engine, browser, backend); it just has to provide
+> the inputs and handle the outputs below. Then delete the mockup.
+
+- **Your game provides:** the current game state for each session (pushed via `POST /game/{id}/event` or read from your own store) and, if you like, your own reply logic.
+- **Your game gets back:** every conversation turn (so you decide what the NPC says) and tool results to update your state.
+
+The mockup in [`game.py`](game.py) shows each touch point, marked with `GAME HOOK` comments:
 
 - `NPC_PROMPT` — the one-sentence persona.
 - `get_state` / `apply_event` — the (MOCKUP, in-memory) game state store.

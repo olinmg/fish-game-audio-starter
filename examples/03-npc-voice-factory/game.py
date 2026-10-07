@@ -1,5 +1,9 @@
 """
-NPC character definitions for voice design.
+MOCKUP GAME: a stand-in so this example runs end to end. It is NOT where your real game has to live.
+Keep the audio code, connect your real game (engine, frontend, backend, ...) to the GAME HOOK touch
+points below, then delete the mock content.
+
+Mock NPC character definitions for voice design.
 GAME HOOK: Replace CHARACTERS with your game's NPCs, derived from your character sheet.
 """
 

@@ -48,7 +48,9 @@ Curated per-topic links: [docs/fish-audio-links.md](docs/fish-audio-links.md).
 
 ## Repo conventions (follow them when extending)
 
-- Game logic lives in the example's `game.*` file, marked with `GAME HOOK` comments. Audio plumbing lives elsewhere.
+- Each example's `game.*` file is a **mockup harness** so the example runs; it is NOT where a team's game must live.
+  When integrating a real game, keep the audio code, wire the game (engine, frontend, backend, wherever it is)
+  to the `GAME HOOK` touch points, and delete the mockup. Don't grow the real game inside `game.*` by default.
 - Placeholder behaviour is marked `MOCKUP`. When you replace a mockup, remove the marker.
 - Config comes from env vars (see `.env.example`). Never hardcode keys. Never expose `FISH_API_KEY` to a browser:
   browser code must get tokens or audio through a small server.

@@ -37,9 +37,16 @@ Use `[brackets]` in text for prosody control. Max ~3 per sentence.
 
 Full list: [emotion tags](https://docs.fish.audio/developer-guide/core-features/emotions.md)
 
-## Where to put your game code
+## Connecting your real game
 
-In `game.py`:
+> **`game.py` is a mockup, not where your game has to live.** It's a stand-in so this example runs
+> end to end. Your real game can live anywhere (engine, browser, backend); it just has to provide
+> the inputs and handle the outputs below. Then delete the mockup.
+
+- **Your game provides:** lines to speak (speaker, text, optional `[emotion]` tags, optional voice id).
+- **Your game gets back:** audio bytes (MP3 here), ready to play or cache.
+
+The mockup shows the shape:
 1. Replace `LINES` with your game's actual dialogue tree.
 2. Add a per-speaker `voice_id` to each line to use a custom voice model (from example 03 or `FISH_VOICE_ID` env).
 

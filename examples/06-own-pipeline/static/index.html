@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="utf-8" />
-<title>06-own-pipeline</title>
+<title>Own pipeline (STT, LLM, TTS)</title>
+<script>if (window.self !== window.top) document.documentElement.classList.add("embedded");</script>
 <!--
   VAD (@ricky0123/vad-web) runs voice-activity detection fully client-side via onnxruntime-web
   (WASM). Loaded from jsdelivr; versions/paths checked against https://docs.vad.ricky0123.com
@@ -12,21 +13,25 @@
 <script src="https://cdn.jsdelivr.net/npm/onnxruntime-web@1.22.0/dist/ort.wasm.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@ricky0123/vad-web@0.0.31/dist/bundle.min.js"></script>
 <style>
-  body { font-family: system-ui, sans-serif; max-width: 640px; margin: 2rem auto; }
+  html { background: #fff; }
+  body { font-family: system-ui, sans-serif; max-width: 640px; margin: 2rem auto; color: #111; }
   button { font-size: 1rem; padding: 0.5rem 1rem; }
   .panel { border: 1px solid #ccc; border-radius: 6px; padding: 0.75rem; margin-top: 0.75rem; }
   .label { font-weight: 600; color: #555; font-size: 0.8rem; text-transform: uppercase; }
+  .embedded h1 { display: none; }
+  .embedded body { margin-top: 1rem; }
   pre { white-space: pre-wrap; margin: 0.25rem 0 0; }
 </style>
 </head>
 <body>
-<h1>06-own-pipeline</h1>
+<h1>Own pipeline (STT, LLM, TTS)</h1>
 <p>
   Mode:
   <label><input type="radio" name="mode" value="vad" checked /> Voice activity detection</label>
   <label><input type="radio" name="mode" value="ptt" /> Push to talk</label>
 </p>
 <button id="start">Start</button>
+<button id="stop" disabled>Stop</button>
 <button id="talk" disabled>Hold to talk</button>
 <p id="status">idle</p>
 
@@ -39,8 +44,9 @@
 const statusEl = document.getElementById("status");
 const startBtn = document.getElementById("start");
 const talkBtn = document.getElementById("talk");
+const stopBtn = document.getElementById("stop");
 
-let ws, audioCtx, stream, mediaSourceNode, scriptNode;
+let ws, audioCtx, stream, mediaSourceNode, scriptNode, myvad;
 let recording = false, pttSamples = [];
 let playQueue = [], currentAudio = null;
 
@@ -112,7 +118,7 @@ function connectWs() {
 
 // --- Mic capture: VAD mode ---------------------------------------------------
 async function startVad() {
-  const myvad = await vad.MicVAD.new({
+  myvad = await vad.MicVAD.new({
     onSpeechEnd: (float32Audio) => {
       document.getElementById("reply").textContent = "-";
       sendUtterance(encodeWav(float32Audio, 16000)); // vad-web always gives 16 kHz audio
@@ -151,8 +157,29 @@ startBtn.onclick = async () => {
   startBtn.disabled = true;
   connectWs();
   const mode = document.querySelector('input[name="mode"]:checked').value;
-  if (mode === "vad") await startVad();
-  else await setupPtt();
+  try {
+    if (mode === "vad") await startVad();
+    else await setupPtt();
+    stopBtn.disabled = false;
+  } catch (err) {
+    stopBtn.onclick(); // clean up whatever did start
+    setStatus(`error: ${err.message ?? err}`);
+  }
+};
+
+// Stop the call: release the mic, stop playback and close the socket
+// (the server cancels any reply still in progress when the socket closes).
+stopBtn.onclick = () => {
+  myvad?.destroy(); myvad = null;
+  stream?.getTracks().forEach((t) => t.stop()); stream = null;
+  audioCtx?.close(); audioCtx = null;
+  recording = false;
+  stopPlayback();
+  ws?.close();
+  talkBtn.disabled = true;
+  stopBtn.disabled = true;
+  startBtn.disabled = false;
+  setStatus("stopped");
 };
 </script>
 </body>
